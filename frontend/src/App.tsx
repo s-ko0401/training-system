@@ -1,8 +1,8 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { LoginPage } from './components/auth/LoginPage';
-import { RegisterPage } from './components/auth/RegisterPage';
-import { AdminDashboard } from './components/admin/AdminDashboard';
-import { UserDashboard } from './components/user/UserDashboard';
+import { BrowserRouter as Router, Navigate, Route, Routes } from "react-router-dom";
+import { AdminDashboard } from "./pages/admin/AdminDashboard";
+import { LoginPage } from "./pages/auth/LoginPage";
+import { RegisterPage } from "./pages/auth/RegisterPage";
+import { UserDashboard } from "./pages/user/UserDashboard";
 
 function App() {
   return (
