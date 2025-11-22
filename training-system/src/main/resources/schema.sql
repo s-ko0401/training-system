@@ -1,7 +1,106 @@
-CREATE TABLE IF NOT EXISTS app_user (
+CREATE TABLE IF NOT EXISTS users (
     id BIGSERIAL PRIMARY KEY,
-    user_name VARCHAR(255) NOT NULL,
-    user_account VARCHAR(255) NOT NULL UNIQUE,
-    user_password VARCHAR(255) NOT NULL,
-    user_role VARCHAR(255) NOT NULL
+    user_id VARCHAR(50),
+    user_name VARCHAR(100) NOT NULL,
+    user_email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role SMALLINT NOT NULL,
+    flag SMALLINT NOT NULL DEFAULT 0,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS students (
+    id BIGSERIAL PRIMARY KEY,
+    student_user_id BIGINT NOT NULL REFERENCES users(id),
+    teacher_user_id BIGINT NOT NULL REFERENCES users(id),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (student_user_id)
+);
+
+CREATE TABLE IF NOT EXISTS daily_reports (
+    id BIGSERIAL PRIMARY KEY,
+    student_user_id BIGINT NOT NULL REFERENCES users(id),
+    date DATE NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    memo TEXT NOT NULL,
+    feedback TEXT,
+    teacher_user_id BIGINT REFERENCES users(id),
+    flag SMALLINT NOT NULL DEFAULT 1,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS questions (
+    id BIGSERIAL PRIMARY KEY,
+    student_user_id BIGINT NOT NULL REFERENCES users(id),
+    date DATE NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    memo TEXT NOT NULL,
+    feedback TEXT,
+    teacher_user_id BIGINT REFERENCES users(id),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS plans (
+    id BIGSERIAL PRIMARY KEY,
+    plan_name VARCHAR(200) NOT NULL,
+    expected_days INTEGER,
+    description TEXT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS plan_sections (
+    id BIGSERIAL PRIMARY KEY,
+    plan_id BIGINT NOT NULL REFERENCES plans(id),
+    section_name VARCHAR(200) NOT NULL,
+    expected_days INTEGER,
+    sort_order INTEGER,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS plan_topics (
+    id BIGSERIAL PRIMARY KEY,
+    section_id BIGINT NOT NULL REFERENCES plan_sections(id),
+    topic_name VARCHAR(200) NOT NULL,
+    sort_order INTEGER,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS plan_todos (
+    id BIGSERIAL PRIMARY KEY,
+    topic_id BIGINT NOT NULL REFERENCES plan_topics(id),
+    todo_name VARCHAR(255) NOT NULL,
+    day_index INTEGER,
+    sort_order INTEGER,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS student_training_plans (
+    id BIGSERIAL PRIMARY KEY,
+    student_id BIGINT NOT NULL REFERENCES users(id),
+    plan_id BIGINT NOT NULL REFERENCES plans(id),
+    status VARCHAR(50) NOT NULL,
+    assigned_at TIMESTAMP NOT NULL,
+    assigned_by BIGINT NOT NULL REFERENCES users(id),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS student_training_tasks (
+    id BIGSERIAL PRIMARY KEY,
+    student_training_plan_id BIGINT NOT NULL REFERENCES student_training_plans(id),
+    todo_id BIGINT NOT NULL REFERENCES plan_todos(id),
+    status VARCHAR(50) NOT NULL,
+    progress_note TEXT,
+    started_at TIMESTAMP,
+    completed_at TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

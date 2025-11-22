@@ -1,35 +1,70 @@
 package com.minami.training_system.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "app_user") // 'user' is a reserved keyword in Postgres
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "user_id", length = 50)
+    private String userId;
+
+    @Column(name = "user_name", nullable = false, length = 100)
     private String userName;
 
-    @Column(nullable = false, unique = true)
-    private String userAccount;
+    @Column(name = "user_email", nullable = false, unique = true, length = 255)
+    private String userEmail;
 
+    @Column(nullable = false, length = 255)
+    private String password;
+
+    /**
+     * 1 = 管理者, 2 = 教師, 3 = 学生
+     */
     @Column(nullable = false)
-    private String userPassword;
+    private Integer role;
 
+    /**
+     * 0 = 有効, 9 = 無効/削除
+     */
     @Column(nullable = false)
-    private String userRole; // ADMIN, USER
+    private Integer flag = 0;
 
-    public User() {
+    /**
+     * Training Status: "未開始", "研修中", "研修終了"
+     */
+    @Column(name = "training_status", length = 20)
+    private String trainingStatus = "未開始";
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        LocalDateTime now = LocalDateTime.now();
+        createdAt = now;
+        updatedAt = now;
     }
 
-    public User(String userName, String userAccount, String userPassword, String userRole) {
-        this.userName = userName;
-        this.userAccount = userAccount;
-        this.userPassword = userPassword;
-        this.userRole = userRole;
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -40,6 +75,14 @@ public class User {
         this.id = id;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     public String getUserName() {
         return userName;
     }
@@ -48,27 +91,59 @@ public class User {
         this.userName = userName;
     }
 
-    public String getUserAccount() {
-        return userAccount;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public void setUserAccount(String userAccount) {
-        this.userAccount = userAccount;
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
-    public String getUserPassword() {
-        return userPassword;
+    public String getPassword() {
+        return password;
     }
 
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public String getUserRole() {
-        return userRole;
+    public Integer getRole() {
+        return role;
     }
 
-    public void setUserRole(String userRole) {
-        this.userRole = userRole;
+    public void setRole(Integer role) {
+        this.role = role;
+    }
+
+    public Integer getFlag() {
+        return flag;
+    }
+
+    public void setFlag(Integer flag) {
+        this.flag = flag;
+    }
+
+    public String getTrainingStatus() {
+        return trainingStatus;
+    }
+
+    public void setTrainingStatus(String trainingStatus) {
+        this.trainingStatus = trainingStatus;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

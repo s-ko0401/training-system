@@ -1,16 +1,14 @@
-import { type ChangeEvent, type FormEvent, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { type FormEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import { Button } from "@/share/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/share/ui/card";
-import { Checkbox } from "@/share/ui/checkbox";
 import { Input } from "@/share/ui/input";
 import { Label } from "@/share/ui/label";
 
 export function LoginPage() {
-  const [companyId, setCompanyId] = useState("");
-  const [account, setAccount] = useState("");
+  const [userEmail, setUserEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState("");
@@ -24,99 +22,116 @@ export function LoginPage() {
       const response = await axios.post(
         "http://localhost:8080/api/auth/login",
         {
-          companyId,
-          account,
+          userEmail,
           password,
         },
       );
 
-      const user = response.data;
-      if (remember) {
-        localStorage.setItem("user", JSON.stringify(user));
-      } else {
-        sessionStorage.setItem("user", JSON.stringify(user));
-      }
+      const data = response.data;
+      const storage = remember ? localStorage : sessionStorage;
+      storage.setItem("auth", JSON.stringify(data));
 
-      if (user.userRole === "ADMIN") {
+      if (data.role === 1) {
         navigate("/admin/dashboard");
+      } else if (data.role === 2) {
+        navigate("/teacher/dashboard");
       } else {
-        navigate("/user/dashboard");
+        navigate("/student/dashboard");
       }
-    } catch (err) {
-      setError("ログインに失敗しました。入力内容をご確認ください。");
+    } catch (err: any) {
+      setError(
+        err.response?.data?.message ||
+          "ログインに失敗しました。入力内容をご確認ください。",
+      );
       console.error(err);
     }
   };
 
-  const handleCompanyIdChange = (event: ChangeEvent<HTMLInputElement>) =>
-    setCompanyId(event.target.value);
-  const handleAccountChange = (event: ChangeEvent<HTMLInputElement>) =>
-    setAccount(event.target.value);
-  const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) =>
-    setPassword(event.target.value);
-
   return (
-    <div className="flex min-h-screen flex-col items-center bg-white">
-      <div className="h-10 w-full bg-slate-900/80" />
-
-      <div className="flex w-full flex-1 flex-col items-center px-4 py-10">
+    <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-100">
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-slate-900 via-slate-950 to-black" />
+      <div className="w-full max-w-3xl px-4">
         <div className="flex flex-col items-center gap-3 py-6">
-          <div className="flex size-16 items-center justify-center rounded-full border border-slate-300 text-sm font-semibold text-slate-600">
+          <div className="flex size-16 items-center justify-center rounded-full border border-slate-700 text-sm font-semibold text-slate-200">
             LOGO
           </div>
           <div className="space-y-1 text-center">
-            <p className="text-lg font-semibold text-slate-700">ログイン</p>
-            <span className="block h-px w-16 bg-slate-200" />
+            <p className="text-lg font-semibold text-white">ログイン</p>
+            <span className="block h-px w-16 bg-slate-700" />
           </div>
         </div>
 
-        <Card className="w-full max-w-xl border-slate-200 shadow-sm">
-
+        <Card className="w-full border-slate-800 bg-slate-900/70 text-slate-100 shadow-2xl shadow-black/40 backdrop-blur">
+          <CardHeader />
 
           <form onSubmit={handleLogin} className="space-y-6">
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm text-slate-600 ">
-                  アカウント
+                <Label htmlFor="email" className="text-sm text-slate-200">
+                  メールアドレス
                 </Label>
                 <Input
                   id="email"
-                  placeholder="アカウント"
-                  value={account}
-                  onChange={handleAccountChange}
-                  className="bg-slate-100"
+                  value={userEmail}
+                  onChange={(event) => setUserEmail(event.target.value)}
+                  className="border-slate-700 bg-slate-900/40 text-white"
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm text-slate-600">
+                <Label htmlFor="password" className="text-sm text-slate-200">
                   パスワード
                 </Label>
                 <Input
                   id="password"
                   type="password"
-                  placeholder="パスワード"
                   value={password}
-                  onChange={handlePasswordChange}
-                  className="bg-slate-100"
+                  onChange={(event) => setPassword(event.target.value)}
+                  className="border-slate-700 bg-slate-900/40 text-white"
                   required
                 />
               </div>
 
+              <div className="flex items-center gap-2">
+                <input
+                  id="remember"
+                  type="checkbox"
+                  checked={remember}
+                  onChange={(event) => setRemember(event.target.checked)}
+                  className="h-4 w-4 rounded border-slate-600 bg-slate-900 text-cyan-400 focus:ring-cyan-500"
+                />
+                <Label htmlFor="remember" className="text-sm text-slate-300">
+                  ログイン情報を記憶する
+                </Label>
+              </div>
+
               {error && (
-                <p className="text-sm font-medium text-destructive">{error}</p>
+                <p className="text-sm font-medium text-red-400">{error}</p>
               )}
             </CardContent>
 
             <CardFooter className="flex flex-col gap-3">
-              <Button type="submit" className="w-full bg-slate-400 text-white hover:bg-slate-500">
+              <Button
+                type="submit"
+                className="w-full bg-cyan-500 text-white hover:bg-cyan-400"
+              >
                 ログイン
               </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full border-slate-700 text-white hover:bg-white/10"
+                onClick={() => navigate("/register")}
+              >
+                新規登録
+              </Button>
+              <p className="text-center text-sm text-slate-400">
+                アカウントをお持ちでない方は登録してください
+              </p>
             </CardFooter>
           </form>
         </Card>
-
       </div>
     </div>
   );

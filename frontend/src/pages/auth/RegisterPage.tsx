@@ -1,6 +1,8 @@
 import { useState } from "react";
+import type { FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+
 import { Button } from "@/share/ui/button";
 import {
   Card,
@@ -28,8 +30,9 @@ export function RegisterPage() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleRegister = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError("");
     try {
       await axios.post("http://localhost:8080/api/auth/register", {
         userName,
@@ -39,81 +42,87 @@ export function RegisterPage() {
       });
       navigate("/login");
     } catch (err: any) {
-      setError(err.response?.data || "Registration failed");
+      setError(err.response?.data || "登録に失敗しました。");
       console.error(err);
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <Card className="w-[400px]">
+    <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-100">
+      <div className="absolute inset-0 -z-10 bg-gradient-to-tr from-black via-slate-900 to-slate-950" />
+      <Card className="w-full max-w-lg border-slate-800 bg-slate-900/70 text-slate-100 shadow-2xl shadow-black/50 backdrop-blur">
         <CardHeader>
-          <CardTitle>Register</CardTitle>
-          <CardDescription>Create a new account.</CardDescription>
+          <CardTitle className="text-white">新規登録</CardTitle>
+          <CardDescription className="text-slate-300">
+            アカウント情報を入力してください。
+          </CardDescription>
         </CardHeader>
         <form onSubmit={handleRegister}>
           <CardContent>
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">氏名</Label>
                 <Input
                   id="name"
-                  placeholder="Your name"
+                  placeholder="例：山田太郎"
                   value={userName}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setUserName(e.target.value)
-                  }
+                  onChange={(e) => setUserName(e.target.value)}
+                  className="border-slate-700 bg-slate-900/40 text-white"
                   required
                 />
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="account">Account</Label>
+                <Label htmlFor="account">ユーザーID</Label>
                 <Input
                   id="account"
-                  placeholder="Choose an account"
+                  placeholder="例：mentor001"
                   value={userAccount}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setUserAccount(e.target.value)
-                  }
+                  onChange={(e) => setUserAccount(e.target.value)}
+                  className="border-slate-700 bg-slate-900/40 text-white"
                   required
                 />
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">パスワード</Label>
                 <Input
                   id="password"
                   type="password"
-                  placeholder="Choose a password"
+                  placeholder="8文字以上で入力"
                   value={userPassword}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setUserPassword(e.target.value)
-                  }
+                  onChange={(e) => setUserPassword(e.target.value)}
+                  className="border-slate-700 bg-slate-900/40 text-white"
                   required
                 />
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="role">Role</Label>
+                <Label htmlFor="role">役割</Label>
                 <Select onValueChange={setUserRole} defaultValue={userRole}>
-                  <SelectTrigger id="role">
-                    <SelectValue placeholder="Select role" />
+                  <SelectTrigger
+                    id="role"
+                    className="border-slate-700 bg-slate-900/40 text-white"
+                  >
+                    <SelectValue placeholder="役割を選択" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="USER">User</SelectItem>
-                    <SelectItem value="ADMIN">Admin</SelectItem>
+                  <SelectContent className="bg-slate-900 text-slate-100">
+                    <SelectItem value="USER">学習者</SelectItem>
+                    <SelectItem value="ADMIN">管理者</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              {error && <p className="text-sm text-red-500">{error}</p>}
+              {error && <p className="text-sm text-red-400">{error}</p>}
             </div>
           </CardContent>
-          <CardFooter className="flex flex-col gap-2">
-            <Button type="submit" className="w-full">
-              Register
+          <CardFooter className="flex flex-col gap-3">
+            <Button
+              type="submit"
+              className="w-full bg-cyan-500 text-white hover:bg-cyan-400"
+            >
+              登録する
             </Button>
-            <p className="text-center text-sm text-gray-500">
-              Already have an account?{" "}
-              <Link to="/login" className="text-blue-500 hover:underline">
-                Login
+            <p className="text-center text-sm text-slate-400">
+              すでにアカウントをお持ちの方は{" "}
+              <Link to="/login" className="text-cyan-300 hover:underline">
+                こちら
               </Link>
             </p>
           </CardFooter>

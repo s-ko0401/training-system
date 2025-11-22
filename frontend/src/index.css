@@ -3,35 +3,35 @@
 @theme {
   --font-sans: "Inter", "Noto Sans TC", "Segoe UI", system-ui, -apple-system, sans-serif;
 
-  --color-background: 0 0% 100%;
-  --color-foreground: 222.2 47.4% 11.2%;
-  --color-card: 0 0% 100%;
-  --color-card-foreground: 222.2 47.4% 11.2%;
-  --color-popover: 0 0% 100%;
-  --color-popover-foreground: 222.2 47.4% 11.2%;
-  --color-primary: 221.2 83.2% 53.3%;
+  --color-background: 222 34% 9%;
+  --color-foreground: 210 20% 96%;
+  --color-card: 217 23% 15%;
+  --color-card-foreground: 210 20% 96%;
+  --color-popover: 217 23% 13%;
+  --color-popover-foreground: 210 20% 96%;
+  --color-primary: 199 89% 48%;
   --color-primary-foreground: 210 40% 98%;
-  --color-secondary: 210 40% 96.1%;
-  --color-secondary-foreground: 222.2 47.4% 11.2%;
-  --color-muted: 210 40% 96.1%;
-  --color-muted-foreground: 215.4 16.3% 46.9%;
-  --color-accent: 210 40% 96.1%;
-  --color-accent-foreground: 222.2 47.4% 11.2%;
-  --color-destructive: 0 84.2% 60.2%;
-  --color-destructive-foreground: 210 40% 98%;
-  --color-border: 214.3 31.8% 91.4%;
-  --color-input: 214.3 31.8% 91.4%;
-  --color-ring: 221.2 83.2% 53.3%;
+  --color-secondary: 220 18% 20%;
+  --color-secondary-foreground: 210 20% 92%;
+  --color-muted: 218 20% 22%;
+  --color-muted-foreground: 214 17% 70%;
+  --color-accent: 219 26% 22%;
+  --color-accent-foreground: 210 20% 96%;
+  --color-destructive: 0 67% 51%;
+  --color-destructive-foreground: 210 20% 96%;
+  --color-border: 218 18% 30%;
+  --color-input: 218 18% 30%;
+  --color-ring: 199 89% 48%;
   --radius: 0.75rem;
 
-  --color-sidebar: 210 25% 98%;
-  --color-sidebar-foreground: 222.2 47.4% 11.2%;
-  --color-sidebar-primary: 221.2 83.2% 53.3%;
-  --color-sidebar-primary-foreground: 210 40% 98%;
-  --color-sidebar-accent: 210 40% 96.1%;
-  --color-sidebar-accent-foreground: 222.2 47.4% 11.2%;
-  --color-sidebar-border: 214.3 31.8% 91.4%;
-  --color-sidebar-ring: 221.2 83.2% 53.3%;
+  --color-sidebar: 225 25% 12%;
+  --color-sidebar-foreground: 210 30% 95%;
+  --color-sidebar-primary: 199 89% 48%;
+  --color-sidebar-primary-foreground: 210 30% 96%;
+  --color-sidebar-accent: 222 21% 20%;
+  --color-sidebar-accent-foreground: 210 20% 96%;
+  --color-sidebar-border: 220 18% 25%;
+  --color-sidebar-ring: 199 89% 48%;
 }
 
 @layer base {
@@ -42,6 +42,6 @@
   body {
     @apply bg-background text-foreground min-h-screen antialiased;
     font-family: var(--font-sans);
-    color-scheme: light;
+    color-scheme: dark;
   }
 }
